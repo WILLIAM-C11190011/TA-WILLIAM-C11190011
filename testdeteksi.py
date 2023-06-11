@@ -50,10 +50,10 @@ def connect_mqtt():
 
 def publish(client, msg):
 	#client = connect_mqtt()
-	# now = datetime.now()
-	# current_time = now.strftime("%H:%M:%S")
-	# date_time = now.strftime("%m/%d/%Y, %H:%M:%S: ")
-	# send = str(date_time)+str(msg)
+	now = datetime.now()
+	current_time = now.strftime("%H:%M:%S")
+	date_time = now.strftime("%m/%d/%Y, %H:%M:%S: ")
+	send = str(date_time)+str(msg)
 	send = str(msg)
 	result = client.publish(topic, send)
 	# result: [0, 1]
@@ -62,28 +62,6 @@ def publish(client, msg):
 		print(f"Send `{send}` to topic `{topic}`")
 	else:
 		print(f"Failed to send message to topic {topic}")
-
-# def subscribe(client: mqtt_client):
-# 	def on_message(client, userdata, msg):
-# 		print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-
-# 	client.subscribe(topic)
-# 	client.on_message = on_message
-
-# def run(item):
-# 	client = connect_mqtt()
-# 	client.loop_start()
-# 	# while True:
-# 	#     time.sleep(1)
-# 	publish(client, item)
-# 	# print("test")
-# 		# subscribe(client)
-
-# def start():
-# 	global client
-# 	client = connect_mqtt()
-# 	client.loop_start()
-
 
 # Text parameters.
 FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
@@ -186,14 +164,6 @@ def post_process(input_image, outputs):
 		var4.append(var)
 		#print(var4)
 
-		#mostdata = hitungarray(var4)
-		#print(coba1)
-		
-		#dx = 640
-		#dy = top + (height//4)
-		#distance = depth_frame[dy,dx]
-		#cv2.putText(input_image, "{}cm".format(distance/10), (left, top -7), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
 	return input_image
 
 def hitungarray(array):
@@ -263,84 +233,6 @@ def calculate_average(var3, var4, item):
     else:
         return 0  # Handle the case when item is not found in var4
 
-# # Example usage
-# var3 = [8, 6, 7, 9, 5, 6]
-# var4 = ['A', 'B', 'A', 'B', 'C', 'A']
-# item = 'A'
-# average = calculate_average(var3, var4, item)
-# print(f"The average confidence for item {item} is: {average}")
-
-#dibawah ini function dari chatgpt
-# def post_process(input_image, depth_frame, outputs):
-#     global var, var2, coba1, var4  # Declare var4 as a global variable
-#     # Lists to hold respective values while unwrapping.
-#     class_ids = []
-#     confidences = []
-#     boxes = []
-#     var3 = []
-	
-
-#     image_height, image_width = input_image.shape[:2]
-
-#     # Resizing factor.
-#     x_factor = image_width
-#     y_factor = image_height
-
-#     # Iterate through 25200 detections.
-#     for out in outputs:
-#         for detection in out:
-#             classes_scores = detection[5:]
-#             class_id = np.argmax(classes_scores)
-#             confidence = classes_scores[class_id]
-#             # Continue if the class score is above threshold.
-#             if classes_scores[class_id] > SCORE_THRESHOLD:
-#                 confidences.append(confidence)
-#                 class_ids.append(class_id)
-
-#                 cx, cy, w, h = detection[0], detection[1], detection[2], detection[3]
-
-#                 left = int((cx - w/2) * x_factor)
-#                 top = int((cy - h/2) * y_factor)
-#                 width = int(w * x_factor)
-#                 height = int(h * y_factor)
-
-#                 box = np.array([left, top, width, height])
-#                 boxes.append(box)
-
-#     # Perform non maximum suppression to eliminate redundant overlapping boxes with
-#     # lower confidences.
-#     indices = cv2.dnn.NMSBoxes(boxes, confidences, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
- 
-#     for i in indices:
-#         box = boxes[i]
-#         left = box[0]
-#         top = box[1]
-#         width = box[2]
-#         height = box[3]
-#         cv2.rectangle(input_image, (left, top), (left + width, top + height), RED, 3)
-
-#         label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
-#         print("deteksi:" + label)
-#         draw_label(input_image, label, left, top)
-
-#         var = classes[class_ids[i]]
-#         var2 = confidences[i]
-
-#         var3.append(var2)
-#         var4.append(var)  # Append var to var4
-#         print(var4)
-
-#         coba1 = var4.count('Normal')
-
-#         dx = 320
-#         dy = top + (height//4)
-#         distance = depth_frame[dy,dx]
-#         cv2.putText(input_image, "{}cm".format(distance/10), (left, top - 7), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-#     return input_image
-
-
-
 if __name__ == '__main__':
 	
 	global client
@@ -378,35 +270,24 @@ if __name__ == '__main__':
 		fps_awal = fps_baru
 		fps = int(fps)
 		label2 = ("FPS: {:.2f}".format(fps))
-		#print(fps) 
-		
-		#ret, frame = cap.read()
-		 
-		
+		 		
 		color_frame = frame.get_color_frame()
 		depth_frame = frame.get_depth_frame()
-
-		
 
 		if not color_frame:
 			continue
 		
-	
 		color_image = np.asanyarray(color_frame.get_data()) 
 		depth_image = np.asanyarray(depth_frame.get_data())
 		print(depth_image)
 		depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
 		
-		#cv2.resize(frame, (640,480))	
-		#distance = 0
-		jarakkiri = depth_image[240, 100]/10
+
 		jarakkanan = depth_image[240, 600]/10
-		# jarakkiri = depth_image[360, 100]/10
-		# jarakkanan = depth_image[360, 1200]/10
-		jaraktengahkiri = depth_image[240, 200]/10
+
 		jaraktengahkanan = depth_image[240, 500]/10
 		jarakbaru = depth_image[240, 320]/10
-		#print("Jarak Baru:{}" +str(jarakbaru))
+
 		
 		cv2.circle(depth_colormap,(600,240), 3, RED, -1)
 		cv2.circle(depth_colormap,(400,240), 3, RED, -1)
@@ -416,12 +297,10 @@ if __name__ == '__main__':
 		cv2.putText(depth_colormap, str(jarakkanan), (550, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(depth_colormap, str(jaraktengahkanan), (400, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(depth_colormap, str(jarakbaru), (320, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-		#print(jarakkiri)
-		#print(jarakkanan)
+	
 
 		detections = pre_process(color_image, net)
 		img = post_process(color_image.copy(), detections)
-		#img2 = post_process(depth_colormap, detections)
 
 		t, _ = net.getPerfProfile()
 		label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
@@ -435,9 +314,6 @@ if __name__ == '__main__':
 		Output = cv2.resize(img.copy(), (854, 480))
 		cv2.putText(Output, "Depth: {}cm".format(jarakbaru), (10, 55), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 
-		#if distance == 0:
-
-		# 	#print("var: "+str(var)+", "+str(var2))
 
 		if 1 < jarakbaru < 23 and  stack == 0:
 			stack = 1
@@ -461,82 +337,48 @@ if __name__ == '__main__':
 
 			if stack == 1:
 				print("TisuTertumpuk")
-				#run("TisuTertumpuk")
 				publish(client, "false,5")
 				stack = 0
 			
 			elif mostdata == 'type1':
 				print("Normal")
-				#run("Normal")
 				publish(client, "true,1")
 
 			elif mostdata == 'type2':
 				print("CacatSobek")
-				# run("CacatSobek")
 				publish(client, "false,1")
 
 			elif mostdata == 'type3':
 				print("CacatKerut")
-				#run("CacatKerut")
 				publish(client, "false,2")
 
 			elif mostdata == 'type4':
 				print("CacatLabelTidakRapi")
-				#run("CacatLabelTidakRapi")
 				publish(client, "false,3")
 
 			elif mostdata == 'type1a':
 				print("NormalDenganCacat")
-				#run("NormalDenganCacat")
 				publish(client, "false,1")
 
 			elif mostdata == 'type1b':
 				print("NormalDenganSobek")
-				#run("NormalDenganSobek")
 				publish(client, "false,1")
 
 			elif mostdata == 'type1c':
 				print("NormalDenganKerutan")
-				#run("NormalDenganKerutan")
 				publish(client, "false,2")
 
 			elif mostdata == 'type1d':
 				print("NormalDenganLabelTidakRapi")
-				#run("NormalDenganLabelTidakRapi")
 				publish(client, "false,3")
 
 			elif mostdata == 'type0':
 				print("Nothing Detected")
-				# run("true,0")
 
 			#postmqtt
 			start = 0
 			var4=[]
 			var3 =[]
-
-		#Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-		#t, _ = net.getPerfProfile()
-		#label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-
-		# cv2.putText(img, str(label2), (500, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-		# cv2.putText(img, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-		# img3=cv2.resize(img, (320,480))
-		# img4=cv2.resize(img2, (320,480))
-		# Output = np.hstack((img, img2))
-
-		# if distance == 0:
-
-		# 	jarakbaru = depth_image[240, 320]
-		# 	#print("Jarak Baru:{}" +str(jarakbaru))
-		# 	cv2.putText(Output, "{}cm".format(jarakbaru/10), (10, 55), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-								
-		# if coba1>1:
-		# 	run("True")
-		# else:
-		# 	print("halo")
-
-		# print(mostdata)
 		
 		cv2.imshow('Output', Output)
 		cv2.imshow('depth', depth_colormap)	
