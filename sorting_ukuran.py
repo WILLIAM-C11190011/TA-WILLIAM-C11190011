@@ -6,28 +6,10 @@ import time
 import random 
 from datetime import datetime
 
-var = '0'
-var2 = '0'
-count1 = 0
-count2 = 0
-count3 = 0
-count4 = 0
-mostdata = 0
+
 distance = 0
-var4 = []
-var3 = []
 start = 0
 ukuran = 0
-average1 = 0
-average2 = 0
-average3 = 0
-average4 = 0
-# Constants.
-INPUT_WIDTH = 416
-INPUT_HEIGHT = 416
-SCORE_THRESHOLD = 0.6
-NMS_THRESHOLD = 0.7
-CONFIDENCE_THRESHOLD = 0.6
 
 broker = '146.190.106.65'
 port = 1883
@@ -86,9 +68,7 @@ if __name__ == '__main__':
 	global client
 	client = connect_mqtt()
 	client.loop_start()
-	#cap = cv2.VideoCapture(0)
- 
-	# Process image.
+
 	fps_awal = 0
 	fps_baru = 0
 
@@ -99,10 +79,7 @@ if __name__ == '__main__':
 		fps_awal = fps_baru
 		fps = int(fps)
 		label2 = ("FPS: {:.2f}".format(fps))
-		#print(fps) 
-		
-		#ret, frame = cap.read()
-		#frame_resized = cv2.resize(frame, (1280, 720))
+
 		frame = pipeline.wait_for_frames()
 		
 		color_frame = frame.get_color_frame()
@@ -118,17 +95,12 @@ if __name__ == '__main__':
 		depth_image = np.asanyarray(depth_frame.get_data())
 	
 		depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
-		
-		#cv2.resize(frame, (640,480))	
-		#distance = 0
-		jarakkiri = depth_image[240, 100]/10
+
+	
 		jarakkanan = depth_image[240, 560]/10
-		# jarakkiri = depth_image[360, 100]/10
-		# jarakkanan = depth_image[360, 1200]/10
-		jaraktengahkiri = depth_image[240, 200]/10
 		jaraktengahkanan = depth_image[240, 500]/10
 		jarakbaru = depth_image[240, 320]/10
-		#print("Jarak Baru:{}" +str(jarakbaru))
+
 		
 		cv2.circle(depth_colormap,(560,240), 3, RED, -1)
 		cv2.circle(depth_colormap,(400,240), 3, RED, -1)
@@ -138,27 +110,19 @@ if __name__ == '__main__':
 		cv2.putText(depth_colormap, str(jarakkanan), (550, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(depth_colormap, str(jaraktengahkanan), (400, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(depth_colormap, str(jarakbaru), (320, 220), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-		#print(jarakkiri)
-		#print(jarakkanan)
+
 
 		img = color_image.copy()
 		img2 = depth_colormap.copy()
 
-		# t, _ = net.getPerfProfile()
-		# label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
 
-		# cv2.putText(img, str(label2), (500, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-		# cv2.putText(img, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		img3=cv2.resize(img, (640,720))
 		img4=cv2.resize(img2, (640,720))
-		#Output = np.hstack((img, img2))
+	
 		Output = cv2.resize(img.copy(), (854, 480))
 		cv2.putText(Output, str(label2), (500, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 
-		#cv2.putText(Output, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(Output, "Depth: {}cm".format(jarakbaru), (10, 55), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
 
 		if 1 < jarakbaru < 23 and  ukuran == 0:
 			ukuran = 1
@@ -186,43 +150,8 @@ if __name__ == '__main__':
 
 			start = 0
 
-			
-			
-	  
-
-			#postmqtt
-		
-
-		#Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-		# t, _ = net.getPerfProfile()
-		# label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
-
-		# cv2.putText(img, str(label2), (500, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-
-		# cv2.putText(img, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-		# cv2.putText(Output, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-		# img3=cv2.resize(img, (320,480))
-		# img4=cv2.resize(img2, (320,480))
-		# Output = np.hstack((img, img2))
-
-		# if distance == 0:
-
-		# 	jarakbaru = depth_image[240, 320]
-		# 	#print("Jarak Baru:{}" +str(jarakbaru))
-		# 	cv2.putText(Output, "{}cm".format(jarakbaru/10), (10, 55), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
-								
-		# if coba1>1:
-		# 	run("True")
-		# else:
-		# 	print("halo")
-
-		# print(mostdata)
-		
 		cv2.imshow('Output', Output)
 		cv2.imshow('depth', depth_colormap)
-		#Output2 = cv2.resize(img.copy(), (1280, 720))
-		#out.write(img)
-		#raw.write(color_image) 
 		if cv2.waitKey(10) & 0xFF == ord('q'):	
 			break
 	pipeline.stop() 
