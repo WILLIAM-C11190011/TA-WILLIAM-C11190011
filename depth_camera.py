@@ -54,7 +54,6 @@ def publish(client, msg):
 	now = datetime.now()
 	current_time = now.strftime("%H:%M:%S")
 	date_time = now.strftime("%m/%d/%Y, %H:%M:%S: ")
-	# send = str(date_time)+str(msg)
 	send = str(msg)
 	result = client.publish(topic, send)
 	# result: [0, 1]
