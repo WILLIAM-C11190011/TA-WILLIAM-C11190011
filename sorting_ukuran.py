@@ -86,9 +86,6 @@ if __name__ == '__main__':
 	global client
 	client = connect_mqtt()
 	client.loop_start()
-	#cap = cv2.VideoCapture(0)
- 
-	# Process image.
 	fps_awal = 0
 	fps_baru = 0
 
@@ -140,11 +137,10 @@ if __name__ == '__main__':
 
 		img3=cv2.resize(img, (640,720))
 		img4=cv2.resize(img2, (640,720))
-		#Output = np.hstack((img, img2))
+		
 		Output = cv2.resize(img.copy(), (854, 480))
 		cv2.putText(Output, str(label2), (500, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 
-		#cv2.putText(Output, label, (10, 30), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 		cv2.putText(Output, "Depth: {}cm".format(jarakbaru), (10, 55), FONT_FACE, FONT_SCALE, RED, THICKNESS, cv2.LINE_AA)
 
 
